@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="asset/css/material-icon.css">
+    <link rel="stylesheet" href="asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="asset/css/roboto-font.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+    <div id="app">
+        <v-app id="inspire" dark>
+            <!-- start -->
+            <v-content>
+                <v-toolbar app clipped-left>
+                    <div class="title">
+                        A.D.A Inc.
+                    </div>
+
+                </v-toolbar>
+                <v-container grid-list-md mt-5>
+                    <v-layout align-center justify-center>
+                        <v-flex xs3></v-flex>
+                        <v-flex xs6 class="mt-5">
+                            <v-card class="elevation-12">
+
+                                <v-toolbar dark color="primary" prominent>
+                                    <v-toolbar-title>{{role}} Login</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-tooltip top>
+                                        <v-btn icon @click="switchRole" slot="activator">
+                                            <v-icon>swap_horiz</v-icon>
+                                        </v-btn>
+                                        <span>Switch User Role</span>
+                                    </v-tooltip>
+                                </v-toolbar>
+
+
+                                <v-form @submit.prevent="chkFail" ref="form" v-model="valid" lazy-validation class="pa-3">
+
+
+                                    <v-card-text>
+                                        <v-text-field v-model="email" prepend-icon="person" :label="role+' email'" type="text" name="email" :rules="emailRules" required></v-text-field>
+                                        <v-text-field v-model="password" prepend-icon="lock" :type="'password'" label="Password" name="pwd" :rules="passwordRules"
+                                            required></v-text-field>
+                                    </v-card-text>
+
+                                    <v-layout>
+                                        <v-flex xs6>
+                                            <v-btn color="primary" type="submit" block class="ml-3">Login</v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-flex xs6>
+                                            <v-btn v-if="register" @click="openDialog" block class="ml-3 primary--text">
+                                                Register
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                    <p class="ml-3 red--text" v-if="loginFailed">Login failed</p>
+
+                                </v-form>
+
+
+                                <!----------------------------------register-------------------------------->
+
+                                <v-dialog v-model="dialog" max-width="800px" class="pa-1">
+                                    <v-card class="pa-3">
+
+
+                                        <h1 class="ml-2 mt-2">Register</h1>
+                                        <v-card-text>
+                                            <v-layout>
+
+                                                <v-flex xs6>
+                                                    <v-text-field v-model="registerEmail" prepend-icon="email" :label="'Email'" type="text" name="email" :rules="emailRules"
+                                                        required></v-text-field>
+                                                    <v-text-field v-model="registerName" prepend-icon="person" :type="'text'" label="Name" name="name" :rules="nameRules" required></v-text-field>
+                                                    <v-text-field v-model="registerPhone" prepend-icon="phone" :type="'text'" label="Phone Number" name="name" :rules="phoneRules"
+                                                        required></v-text-field>
+                                                    <v-text-field v-model="registerAddress" prepend-icon="location_on" :type="'text'" label="Delivery Address" name="name" :rules="AddressRules"
+                                                        required></v-text-field>
+                                                    <v-text-field v-model="registerPwd" @keyup="CheckPassword" prepend-icon="lock" :type="'password'" label="Password" name="name"
+                                                        :rules="passwordRules" required></v-text-field>
+                                                    <v-text-field v-model="confirmPwd" @keyup="CheckPassword" prepend-icon="lock" :type="'password'" label="Confirm Password"
+                                                        name="name" :rules="passwordRules" required></v-text-field>
+                                                    <v-alert v-model="pwalert" :value="false" color="error" icon="warning" outline>
+                                                        <v-layout class="ml-1">{{this.msg}}</v-layout>
+                                                    </v-alert>
+                                                </v-flex>
+
+                                                <v-flex xs1></v-flex>
+
+                                                <v-flex xs5>
+                                                    <v-layout column>
+
+                                                        <div v-if="!image">
+                                                            <h2>Select an image</h2>
+                                                            <img src="asset/image/part/0.jpg" height="300px"></img>
+                                                            <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                            <v-btn block @click="upload">Upload Image</v-btn>
+                                                        </div>
+                                                        <div v-else>
+                                                            <h2>Select an image</h2>
+                                                            <img :src="image" height="300px" />
+                                                            <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                            <v-btn block @click="removeImage">Upload Image</v-btn>
+                                                        </div>
+
+                                                    </v-layout>
+                                                </v-flex>
+
+
+
+                                            </v-layout>
+
+                                        </v-card-text>
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <v-btn @click="SubmitRegister" block class="ml-3 primary--text">
+                                                    Register
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+
+
+                                    </v-card>
+                                </v-dialog>
+
+                                <!----------------------------------register end------------------------------>
+
+                            </v-card>
+
+
+                        </v-flex>
+                        <v-spacer></v-spacer>
+                    </v-layout>
+                </v-container>
+
+                <v-dialog v-model="successDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            You have successfully registered as a dealer!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="registerFail" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            You have to fill in all information!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                    <v-spacer></v-spacer>
+                    <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+                </v-footer>
+
+
+                </v-container>
+            </v-content>
+            <!-- end -->
+        </v-app>
+    </div>
+
+    <script src="asset/js/vue.js"></script>
+    <script src="asset/js/vuetify.js"></script>
+    <script src="asset/js/axios.js"></script>
+    <script src="asset/js/fadein.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: () => ({
+                role: "Dealer",
+                username: "",
+                password: "",
+                register: true,
+                email: "",
+                dialog: false,
+                valid: true,
+                loginFailed: false,
+                registerEmail: "",
+                registerName: "",
+                registerPwd: "",
+                confirmPwd: "",
+                registerPhone: "",
+                registerAddress: "",
+                registerPhoto: null,
+                successDialog: "",
+                registerFail: false,
+                pwalert: "",
+                msg: "",
+                image: "",
+                passwordRules: [
+                    v => !!v || 'Password is required'
+                ],
+                emailRules: [v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "Email is required"],
+                nameRules: [v => !!v || "Name is required"],
+                phoneRules: [v => !!v || "Phone is required", v => /^[0-9]+$/.test(v) || "Invalid Phone Number"],
+                AddressRules: [v => !!v || "Address is required"],
+
+            }),
+
+            methods: {
+
+                upload() {
+                    this.$refs.upload.click();
+                },
+
+                SendRequest() {
+                    if (this.role == "Dealer") {
+                        var Requests = new FormData();
+                        Requests.set("email", this.email);
+                        Requests.set("pwd", this.password);
+                        axios({
+                            method: "post",
+                            url: 'api/LoginDealer.php',
+                            data: Requests,
+                            config: { headers: { "Content-Type": "multipart/form-data" } }
+                        })
+                            .then(function (response) {
+                                //handle success
+                                console.log(response);
+                                if (response.data == 1) {
+                                    window.location.href = "dealer/dealerMain.html";
+                                } else {
+                                    this.loginFailed = true;
+                                    this.username = "";
+                                    this.password = "";
+                                }
+                            })
+                            .catch(function (response) {
+                                //handle error
+                                console.log(response);
+                            });
+                    } else {
+                        var Requests = new FormData();
+                        Requests.set("email", this.email);
+                        Requests.set("pwd", this.password);
+                        axios({
+                            method: "post",
+                            url: 'api/LoginAdmin.php',
+                            data: Requests,
+                            config: { headers: { "Content-Type": "multipart/form-data" } }
+                        })
+                            .then(function (response) {
+                                //handle success
+                                console.log(response);
+                                if (response.data == 1) {
+                                    window.location.href = "admin/adminMain.html";
+                                } else {
+                                    this.loginFailed = true;
+                                    this.username = "";
+                                    this.password = "";
+
+                                }
+                            })
+                            .catch(function (response) {
+                                //handle error
+                                console.log(response);
+                            });
+                    }
+
+                },
+
+
+
+                getParameterByName(name, url) {
+                    if (!url) url = window.location.href;
+                    name = name.replace(/[\[\]]/g, "\\$&");
+                    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                    if (!results) return null;
+                    if (!results[2]) return "";
+                    return decodeURIComponent(results[2].replace(/\+/g, " "));
+                },
+
+                CheckPassword() {
+                    if (this.registerPwd == this.confirmPwd) {
+                        this.pwalert = false;
+                    } else {
+                        this.pwalert = true;
+                        this.msg = "Password Not Match";
+                    }
+                },
+
+                setRole(role) {
+                    this.role = role;
+                    if (this.role == 'Dealer') {
+                        this.$vuetify.theme.primary = '#2979ff';
+                    } else {
+                        this.$vuetify.theme.primary = '#ef6c00';
+                    }
+
+                },
+                switchRole() {
+                    if (this.role == 'Dealer') {
+                        this.setRole("Administrator");
+                        this.register = false;
+                    } else {
+                        this.setRole("Dealer");
+                        this.register = true;
+                    }
+                },
+
+                SubmitRegister() {
+                    if (this.registerEmail != "" && this.registerName != "" & this.registerPhone != "" && this.registerAddress != "" && this.registerPwd != "") {
+                        if (!this.pwalert) {
+                            var Requests = new FormData();
+                            Requests.set("registerEmail", this.registerEmail);
+                            Requests.set("registerName", this.registerName);
+                            Requests.set("registerPhone", this.registerPhone);
+                            Requests.set("registerAddress", this.registerAddress);
+                            Requests.set("registerPwd", this.registerPwd);
+                            Requests.set("photo", this.registerPhoto);
+                            axios({
+                                method: "post",
+                                url: "api/Register.php ",
+                                data: Requests,
+                                config: { headers: { "Content-Type": "multipart/form-data" } }
+                            })
+                                .then(resp => {
+                                    this.successDialog = true;
+                                    this.dialog = false;
+                                    this.registerAddress = "";
+                                    this.registerEmail = "";
+                                    this.registerName = "";
+                                    this.registerPhone = "";
+                                    this.registerPwd = "";
+                                    this.confirmPwd = "";
+                                    this.registerPhoto = "";
+                                });
+                        }
+                    } else {
+                        this.registerFail = true;
+                    }
+
+                },
+
+                chkFail() {
+                    if (!this.$refs.form.validate()) {
+                        this.loginFailed = true;
+                        return;
+                    }
+                    this.SendRequest();
+                },
+
+                openDialog() {
+                    this.dialog = true;
+                },
+
+                onFileChange(e) {
+                    var files = e.target.files || e.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    this.createImage(files[0]);
+                },
+
+                createImage(file) {
+                    var image = new Image();
+                    var reader = new FileReader();
+                    var vm = this;
+
+                    reader.onload = (e) => {
+                        vm.image = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    this.registerPhoto = file;
+                },
+
+                removeImage: function (e) {
+                    this.image = '';
+                    this.upload();
+                }
+
+
+            }
+
+        })
+    </script>
+
+</body>
+
+</html>

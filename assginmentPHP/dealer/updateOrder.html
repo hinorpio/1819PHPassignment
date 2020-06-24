@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="primary" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-avatar size="32px" tile>
+                                        <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                                    </v-avatar>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="goManage">
+
+                            <v-list-tile-action>
+                                <v-icon>settings</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Manage Your Account</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-2 font-weight-thin mb-3">Dealer</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Orders
+                    </v-list-tile>
+
+                    <v-list-tile @click="goAdd">
+                        <v-list-tile-action>
+                            <v-icon>add_box</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Make Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goUpdate">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Update Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Account
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goView">
+                        <v-list-tile-action>
+                            <v-icon>chrome_reader_mode</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goEdit">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Edit Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goChange">
+                        <v-list-tile-action>
+                            <v-icon>security</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Change Password</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!---------------------------------------------------------------->
+
+            <v-content>
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="dealerMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            View & Update Order
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            update
+                        </v-icon>
+                        <h1 class="display-1 primary--text ml-3">View & Update Order</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">View your summitted order and update their status</h4>
+
+
+                    <v-tabs v-model="tab" class="mt-4" grow>
+                        <v-tabs-slider color="yellow"></v-tabs-slider>
+
+                        <v-tab v-for="item in tabs" :key="item">
+                            {{ item }}
+                        </v-tab>
+                    </v-tabs>
+
+                    <v-tabs-items v-model="tab">
+                        <v-tab-item v-for="item in tabs" :key="item">
+
+
+                            <!------------------------------------------------------------------------------------------------>
+
+                            <v-data-table :headers="header1" :items="filteredOrders(0)" :pagination.sync="pagination" class="elevation-1" :search="search"
+                                v-if="tab==0">
+                                <template slot="items" slot-scope="props">
+                                    <td>{{ props.item.orderID }}</td>
+                                    <td>{{ props.item.date }}</td>
+                                    <td>{{ props.item.deliveryAddress }}</td>
+                                    <td>{{ props.item.price }}</td>
+                                    <td>{{ props.item.statement }}</td>
+                                    <td>
+                                        <v-tooltip top>
+                                            <v-btn icon class="mx-0" @click="viewOrder(props.item)" slot="activator">
+                                                <v-icon color="grey darken-1">assignment</v-icon>
+                                            </v-btn>
+                                            <span>View Order Detail</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-if="props.item.status==1" top>
+                                            <v-btn icon class="mx-0" @click="deleteOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="red">cancel</v-icon>
+                                            </v-btn>
+                                            <span>Cancel The Order</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-else-if="props.item.status==2" top>
+                                            <v-btn icon class="mx-0" @click="confirmOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="teal">check_circle</v-icon>
+                                            </v-btn>
+                                            <span>Confirm The Delivery</span>
+                                        </v-tooltip>
+                                    </td>
+                                </template>
+
+                                <template slot="no-data">
+                                    <div class="text-xs-center">No records found</div>
+                                </template>
+                            </v-data-table>
+
+
+                            <v-data-table :headers="header1" :items="filteredOrders(1)" :pagination.sync="pagination" class="elevation-1" :search="search"
+                                v-if="tab==1">
+                                <template slot="items" slot-scope="props">
+                                    <td>{{ props.item.orderID }}</td>
+                                    <td>{{ props.item.date }}</td>
+                                    <td>{{ props.item.deliveryAddress }}</td>
+                                    <td>{{ props.item.price }}</td>
+                                    <td>{{ props.item.statement }}</td>
+                                    <td>
+                                        <v-tooltip top>
+                                            <v-btn icon class="mx-0" @click="viewOrder(props.item)" slot="activator">
+                                                <v-icon color="grey darken-1">assignment</v-icon>
+                                            </v-btn>
+                                            <span>View Order Detail</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-if="props.item.status==1" top>
+                                            <v-btn icon class="mx-0" @click="deleteOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="red">cancel</v-icon>
+                                            </v-btn>
+                                            <span>Cancel The Order</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-else-if="props.item.status==2" top>
+                                            <v-btn icon class="mx-0" @click="confirmOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="teal">check_circle</v-icon>
+                                            </v-btn>
+                                            <span>Confirm The Delivery</span>
+                                        </v-tooltip>
+                                    </td>
+                                </template>
+
+                                <template slot="no-data">
+                                    <div class="text-xs-center">No records found</div>
+                                </template>
+                            </v-data-table>
+
+                            <v-data-table :headers="header1" :items="filteredOrders(2)" :pagination.sync="pagination" class="elevation-1" :search="search"
+                                v-if="tab==2">
+                                <template slot="items" slot-scope="props">
+                                    <td>{{ props.item.orderID }}</td>
+                                    <td>{{ props.item.date }}</td>
+                                    <td>{{ props.item.deliveryAddress }}</td>
+                                    <td>{{ props.item.price }}</td>
+                                    <td>{{ props.item.statement }}</td>
+                                    <td>
+                                        <v-tooltip top>
+                                            <v-btn icon class="mx-0" @click="viewOrder(props.item)" slot="activator">
+                                                <v-icon color="grey darken-1">assignment</v-icon>
+                                            </v-btn>
+                                            <span>View Order Detail</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-if="props.item.status==1" top>
+                                            <v-btn icon class="mx-0" @click="deleteOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="red">cancel</v-icon>
+                                            </v-btn>
+                                            <span>Cancel The Order</span>
+                                        </v-tooltip>
+                                        <v-tooltip v-else-if="props.item.status==2" top>
+                                            <v-btn icon class="mx-0" @click="confirmOrder(props.item.orderID)" slot="activator">
+                                                <v-icon color="teal">check_circle</v-icon>
+                                            </v-btn>
+                                            <span>Confirm The Delivery</span>
+                                        </v-tooltip>
+                                    </td>
+                                </template>
+
+                                <template slot="no-data">
+                                    <div class="text-xs-center">No records found</div>
+                                </template>
+                            </v-data-table>
+                            <!-------------------------------------------------------------------------------------------------->
+                            <v-dialog v-model="dialog" max-width="800px">
+                                <v-card>
+                                    <v-card-title>
+                                        <p class="title ml-2">Order Detail</p>
+                                        <br />
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <p class="title ml-2">Order No. {{processOrder.orderID}}</p>
+
+                                        <p class="title ml-2">Date : {{processOrder.date}}</p>
+
+                                        <p class="title ml-2">Delivery Address : {{processOrder.deliveryAddress}}</p>
+
+                                        <p class="title ml-2">Total Price : {{processOrder.price}}</p>
+
+                                        <p class="title ml-2">Status : {{processOrder.statement}}</p>
+                                        <br />
+                                        <v-data-table :headers="header2" :items="orderDetail" class="elevation-1" :search="search" hide-actions>
+                                            <template slot="items" slot-scope="props">
+                                                <td>
+                                                    <img :src="props.item.src" height="100px"></img>
+                                                </td>
+                                                <td>{{ props.item.partNumber }}</td>
+                                                <td>{{ props.item.partName }}</td>
+                                                <td>{{ props.item.quantity }}</td>
+                                                <td>{{ props.item.price }}</td>
+
+                                            </template>
+
+                                            <template slot="no-data">
+                                                <div class="text-xs-center">No records found</div>
+                                            </template>
+                                        </v-data-table>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="primary" flat @click="dialog=false">Close</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+
+                        </v-tab-item>
+
+                    </v-tabs-items>
+
+                </v-container>
+
+                <v-dialog v-model="deleteDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="info">
+                        <v-layout class="ml-1">
+                            Delete Order {{deleteNo}} successfully!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="confirmDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Confirm Order {{confirmNo}} successfully!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+
+
+            </v-content>
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            address: "",
+            phone: "",
+            email: "",
+            Profile: "",
+            name: "",
+            search: "",
+            dialog: false,
+            deleteDialog: false,
+            deleteNo: '',
+            confirmDialog: false,
+            confirmNo: '',
+            pagination: {
+                'sortBy': 'OrderId',
+                'descending': true
+            },
+            header1: [
+                {
+                    text: 'Order Id',
+                    align: 'left',
+                    value: 'orderID'
+                },
+                {
+                    text: 'Date',
+                    value: 'date'
+                },
+                {
+                    text: 'Address',
+                    value: 'deliveryAddress'
+                },
+                {
+                    text: 'Price',
+                    value: 'price'
+                },
+                {
+                    text: 'Status',
+                    value: 'statement'
+                },
+                {
+                    text: 'Actions',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+            header2: [
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'PartNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'Name'
+                },
+                {
+                    text: 'Quantity',
+                    value: 'Quuantity'
+                },
+                {
+                    text: 'Price',
+                    value: 'Price'
+                },
+                {
+                    text: 'Actions',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+            orders: [],
+            orderDetail: [],
+            processOrder: [],
+            tabs: [
+                'All', 'Not Completed', 'Completed'
+            ],
+            tab: null,
+
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+            this.loadOrder();
+        },
+
+        methods: {
+
+            filteredOrders(t) {
+                if (t == 1) {
+                    return this.orders.filter(r => r.status != "3")
+                }
+                if (t == 2) {
+                    return this.orders.filter(r => r.status == "3")
+                }
+                return this.orders;
+            },
+
+            goManage() {
+                window.location.href = "manageAccount.html";
+            },
+
+            goEdit() {
+                window.location.href = "editProfile.html";
+            },
+
+            goView() {
+                window.location.href = "viewProfile.html";
+            },
+
+            goHome() {
+                window.location.href = "dealerMain.html";
+            },
+
+            goChange() {
+                window.location.href = "changePwd.html";
+            },
+
+            goAdd() {
+                window.location.href = "addOrder.html";
+            },
+
+            goUpdate() {
+                window.location.href = "updateOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetDealerProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            loadOrder() {
+                axios
+                    .get("../api/GetOrders.php")
+                    .then(resp => {
+                        this.orders = resp.data; //put requested data inside vue object(post)
+                    });
+            },
+
+            deleteOrder(orderID) {
+                axios
+                    .get("../api/DeleteOrder.php?orderID=" + orderID)
+                    .then(resp => {
+                        this.deleteDialog = true;
+                        this.deleteNo = orderID; //put requested data inside vue object(post)
+                        this.loadOrder();
+                    });
+            },
+
+            confirmOrder(orderID) {
+                axios
+                    .get("../api/ConfirmOrder.php?orderID=" + orderID)
+                    .then(resp => {
+                        this.confirmDialog = true;
+                        this.confirmNo = orderID; //put requested data inside vue object(post)
+                        this.loadOrder();
+                    });
+            },
+
+            viewOrder(order) {
+                axios
+                    .get("../api/ViewOrder.php?orderID=" + order.orderID)
+                    .then(resp => {
+                        this.processOrder = order;
+                        this.dialog = true;
+                        this.orderDetail = resp.data;
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.dealerID;
+                this.name = this.Profile.name;
+                this.phone = this.Profile.phoneNumber;
+                this.address = this.Profile.address;
+            },
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+        }
+
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="orange darken-3" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <v-icon dark>account_circle</v-icon>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-icon large>account_circle</v-icon>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+            <!----------------------------------------navigation------------------------------------------------>
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role2.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-1 font-weight-thin mb-3">Administrator</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Parts
+                    </v-list-tile>
+
+                    <v-list-tile @click="goPart">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Edit Parts</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Order
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goOrder">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Manage Order</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!------------------------------------content Start------------------------------------------------------>
+
+            <v-content>
+
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item>
+                            Home Page
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            home
+                        </v-icon>
+                        <h1 class="display-1 orange--text ml-3">Home Page</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Welcome to A.D.A Inc. {{name}}</h4>
+
+                    <v-layout class="mt-4">
+
+                        <v-flex xs6>
+                            <v-list two-line dark>
+                                <v-list-tile @click="goPart">
+                                    <v-list-tile-action>
+                                        <v-icon medium>edit</v-icon>
+                                    </v-list-tile-action>
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>
+                                            <h1 class="title">View & Edit Part</h1>
+                                        </v-list-tile-title>
+                                        Edit and View the detail information of all parts
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-flex>
+
+
+                    </v-layout>
+
+                    <v-layout class="mt-4">
+
+                        <v-flex xs6>
+                            <v-list two-line dark>
+                                <v-list-tile @click="goOrder">
+                                    <v-list-tile-action>
+                                        <v-icon medium>update</v-icon>
+                                    </v-list-tile-action>
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>
+                                            <h1 class="title">Manage Order</h1>
+                                        </v-list-tile-title>
+
+                                        Manage the status of order made by dealer
+
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-flex>
+
+
+                    </v-layout>
+
+                </v-container>
+            </v-content>
+
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            email: "",
+            fname: "",
+            lname: "",
+            name: "",
+            Profile: "",
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+        },
+
+
+        methods: {
+
+            goHome() {
+                window.location.href = "AdminMain.html";
+            },
+
+            goPart() {
+                window.location.href = "EditPart.html";
+            },
+
+            goOrder() {
+                window.location.href = "ManageOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetAdminProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.email;
+                this.fname = this.Profile.firstName;
+                this.lname = this.Profile.lastName;
+                this.name = this.fname + " " + this.lname;
+            },
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+        }
+
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="orange darken-3" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <v-icon dark>account_circle</v-icon>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-icon large>account_circle</v-icon>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+            <!----------------------------------------navigation------------------------------------------------>
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role2.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-1 font-weight-thin mb-3">Administrator</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Parts
+                    </v-list-tile>
+
+                    <v-list-tile @click="goPart">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Edit Parts</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Order
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goOrder">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Manage Order</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+            <!-----------------------------------------end navigation---------------------------------------------------------------------->
+
+            <!----------------------------------content-------------------------------------------------------------->
+            <v-content>
+
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="AdminMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            View & Edit Parts
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            edit
+                        </v-icon>
+                        <h1 class="display-1 orange--text ml-3">View & Edit Parts</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Edit and View the detail information of all parts</h4>
+
+                    <v-toolbar class="mt-4" dark>
+                        <v-toolbar-title>
+                            <v-icon medium>
+                                pages
+                            </v-icon>
+                            Parts
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-text-field prepend-inner-icon="search" flat v-model="search" append-icon="send" label="Search" single-line hide-details
+                            solo-inverted></v-text-field>
+                    </v-toolbar>
+
+                    <v-footer dark>
+                        <v-spacer></v-spacer>
+
+                        <v-btn @click="addDialog = !addDialog" class="mr-2" color="dark" small>
+                            <v-icon class="mr-1" color="amber">
+                                library_add
+                            </v-icon>
+                            <strong class="amber--text">Add New Part</strong>
+                        </v-btn>
+
+                    </v-footer>
+
+
+                    <v-data-table :headers="header1" :items="partList" :pagination.sync="pagination" class="elevation-1" :search="search" dark>
+                        <template slot="items" slot-scope="props">
+                            <td>
+                                <img :src="props.item.src" height="100px"></img>
+                            </td>
+                            <td>{{props.item.partNumber}}</td>
+                            <td>{{props.item.partName}}</td>
+                            <td>{{props.item.stockQuantity}}</td>
+                            <td>HKD {{props.item.stockPrice}}</td>
+                            <td>{{props.item.statement}}</td>
+                            <td>{{props.item.email}}</td>
+                            <td>
+                                <v-tooltip top>
+                                    <v-btn icon class="mx-0" @click="openDialog(props.item)" slot="activator">
+                                        <v-icon color="">edit</v-icon>
+                                    </v-btn>
+                                    <span>Edit</span>
+                                </v-tooltip>
+                            </td>
+                        </template>
+
+                        <template slot="no-data">
+                            <div class="text-xs-center">No records found</div>
+                        </template>
+                    </v-data-table>
+
+
+                    <!-------------------------------------------Dialog Start ---------------------------------------------------->
+
+                    <v-dialog v-model="dialog" max-width="800px" class="pa-3">
+
+                        <v-toolbar grid-list-md>
+                            <v-layout>
+                                <v-icon medium>
+                                    edit
+                                </v-icon>
+                                <h1 class="diaplay-1 ml-2 mr-1">EDIT PART</h1>
+                                {{this.edit.editNo}}
+                            </v-layout>
+                        </v-toolbar>
+
+                        <v-card class="pa-3" dark>
+                            <v-card-text>
+
+                                <v-layout>
+
+                                    <v-flex xs6>
+
+                                        <v-layout column>
+                                            <v-text-field v-model="edit.editName" prepend-icon="pages" :label="'Part Name'" type="text" name="email" :rules="rules" required></v-text-field>
+                                            <v-text-field v-model="edit.editStock" prepend-icon="home" :type="'text'" label="Stock Quantity" name="name" :rules="numRules"
+                                                required></v-text-field>
+                                            <v-text-field v-model="edit.editPrice" prepend-icon="attach_money" :type="'text'" label="Price" name="name" :rules="rules"
+                                                required></v-text-field>
+                                            <v-select :items="status" label="Status" v-model="edit.editStatus" prepend-icon="thumbs_up_down"></v-select>
+                                            <v-btn @click="updateItem" block class="ml-3 mt-4 primary--text">
+                                                Update
+                                            </v-btn>
+                                        </v-layout>
+
+                                    </v-flex>
+
+                                    <v-flex xs2></v-flex>
+
+                                    <v-flex xs4>
+                                        <v-layout column>
+                                            <div v-if="!image">
+                                                <h2>Select an image</h2>
+                                                <img :src="edit.src" height="250px"></img>
+                                                <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                <v-btn block @click="upload">Upload Image</v-btn>
+                                            </div>
+                                            <div v-else>
+                                                Select an image
+                                                <img :src="image" height="250px" />
+                                                <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                <v-btn block @click="removeImage">Upload Image</v-btn>
+                                            </div>
+                                        </v-layout>
+
+                                    </v-flex>
+
+                                </v-layout>
+
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
+
+                    <!---------------------------------------Dialog End-------------------------------------------->
+
+                    <!-------------------------------------------Add Dialog Start ---------------------------------------------------->
+
+                    <v-dialog v-model="addDialog" max-width="800px">
+                        <v-toolbar grid-list-md dark>
+                            <v-layout>
+                                <v-icon medium>
+                                    library_add
+                                </v-icon>
+                                <h1 class="diaplay-1 ml-2 mr-1">NEW PART</h1>
+                                {{this.newPartID}}
+                            </v-layout>
+                        </v-toolbar>
+
+                        <v-card class="pa-3">
+                            <v-form @submit.prevent="chkFail" ref="form" v-model="valid" lazy-validation>
+                                <v-card-text>
+                                    <v-layout>
+                                        <v-flex xs6>
+
+                                            <v-layout column>
+                                                <v-text-field v-model="newItem.newName" prepend-icon="pages" :label="'Part Name'" type="text" name="email" :rules="rules"
+                                                    required></v-text-field>
+                                                <v-text-field v-model="newItem.newStock" prepend-icon="home" :type="'text'" label="Stock Quantity" name="name" :rules="numRules"
+                                                    required></v-text-field>
+                                                <v-text-field v-model="newItem.newPrice" prepend-icon="attach_money" :type="'text'" label="Price" name="name" :rules="numRules"
+                                                    required></v-text-field>
+                                                <v-select :items="status" label="Status" v-model="newItem.newStatus" prepend-icon="thumbs_up_down" :rules="rules"></v-select>
+                                                <v-btn block type="submit" class="ml-3 mt-4 primary--text">
+                                                    Create
+                                                </v-btn>
+                                            </v-layout>
+
+                                        </v-flex>
+
+                                        <v-flex xs2></v-flex>
+
+                                        <v-flex xs4>
+                                            <v-layout column>
+
+                                                <div v-if="!image">
+                                                    <h2>Select an image</h2>
+                                                    <img src="../asset/image/part/0.jpg" height="250px"></img>
+                                                    <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                    <v-btn block @click="upload">Upload Image</v-btn>
+                                                </div>
+                                                <div v-else>
+                                                    <h2>Select an image</h2>
+                                                    <img :src="image" height="250px" />
+                                                    <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                                    <v-btn block @click="removeImage">Upload Image</v-btn>
+                                                </div>
+
+                                            </v-layout>
+
+
+                                        </v-flex>
+
+                                    </v-layout>
+
+                                </v-card-text>
+
+                            </v-form>
+
+                        </v-card>
+                    </v-dialog>
+
+                    <!---------------------------------------Add Dialog End-------------------------------------------->
+
+                </v-container>
+
+                <v-dialog v-model="updateSuccess" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Update Part {{updateID}} ({{updateName}}) successfully
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="createSuccess" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Create Part {{createID}} ({{createName}})successfully
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="failedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Server Error! Please Wait!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+            </v-content>
+
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            email: "",
+            fname: "",
+            lname: "",
+            name: "",
+            image: '',
+            Profile: "",
+            search: "",
+            valid: true,
+            dialog: false,
+            addDialog: false,
+            failedDialog: false,
+            updateName: "",
+            updateID: "",
+            updateSuccess: false,
+            createName: "",
+            createID: "",
+            createSuccess: false,
+            newPartID: "",
+            edit: {
+                editNo: "",
+                editName: "",
+                editPrice: "",
+                editStatus: "",
+                editStock: "",
+                editPhoto: null,
+            },
+            newItem: {
+                newName: "",
+                newPrice: "",
+                newStatus: "",
+                newStock: "",
+                newPhoto: null,
+            },
+            status: ['Available', 'Unavailable'],
+            partList: [],
+            rules: [v => !!v || "Cannot be empty!"],
+            numRules: [v => !!v || "Cannot be empty!", v => /^[0-9]+$/.test(v) || "Number Is Required"],
+            pagination: {
+                'sortBy': 'partNumber',
+                'ascending': true,
+                rowsPerPage: 10
+            },
+            header1: [
+                {
+                    text: 'Part Image',
+                    align: 'left',
+                    value: 'image',
+                    sortable: false
+                },
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'partNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'partName'
+                },
+                {
+                    text: 'Stock',
+                    value: 'stockQuantity'
+                },
+                {
+                    text: 'Price',
+                    value: 'stockPrice'
+                },
+                {
+                    text: 'Status',
+                    value: 'stockStatus'
+                },
+                {
+                    text: 'Last Edit',
+                    value: 'lastEdit',
+                    sortable: false
+                },
+                {
+                    text: 'Action',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+            this.getPartList();
+            this.getNewPartID();
+        },
+
+
+        methods: {
+            upload() {
+                this.$refs.upload.click();
+            },
+
+            goHome() {
+                window.location.href = "AdminMain.html";
+            },
+
+            goPart() {
+                window.location.href = "EditPart.html";
+            },
+
+            goOrder() {
+                window.location.href = "ManageOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetAdminProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.email;
+                this.fname = this.Profile.firstName;
+                this.lname = this.Profile.lastName;
+                this.name = this.fname + " " + this.lname;
+            },
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+            getPartList() {
+                this.partList = [];
+                axios
+                    .get("../api/GetPartList.php")
+                    .then(resp => {
+                        this.partList = resp.data;
+                    });
+            },
+
+            getNewPartID() {
+                axios
+                    .get("../api/GetNewPartID.php")
+                    .then(resp => {
+                        this.newPartID = resp.data;
+                    });
+            },
+
+            openDialog(item) {
+                this.dialog = true;
+                this.edit.editNo = item.partNumber;
+                this.edit.editName = item.partName;
+                this.edit.editPrice = item.stockPrice;
+                this.edit.editStock = item.stockQuantity;
+                this.edit.src = item.src;
+                if (item.stockStatus == 1) {
+                    this.edit.editStatus = this.status[0];
+                } else {
+                    this.edit.editStatus = this.status[1];
+                }
+
+            },
+
+
+            updateItem() {
+
+                var Requests = new FormData();
+                var newStatus = 1;
+
+                Requests.set("partNumber", this.edit.editNo);
+                Requests.set("email", this.email);
+                Requests.set("partName", this.edit.editName);
+                Requests.set("stockQuantity", this.edit.editStock);
+                Requests.set("stockPrice", this.edit.editPrice);
+                Requests.set("photo", this.edit.editPhoto);
+                if (this.edit.editStatus == this.status[0]) {
+                    newStatus = 1;
+                } else {
+                    newStatus = 2;
+                }
+                Requests.set("stockStatus", newStatus);
+
+                axios({
+                    method: "post",
+                    url: '../api/UpdatePart.php',
+                    data: Requests,
+                    config: { headers: { "Content-Type": "multipart/form-data" } }
+                })
+                    .then(resp => {
+                        this.updateID = this.edit.editNo;
+                        this.updateName = this.edit.editName;
+                        this.updateSuccess = true;
+                        this.edit.editPhoto = "";
+                        this.newItem.newPhoto = "";
+                        this.dialog = false;
+                        this.getPartList();
+                        this.image = null;
+                    });
+
+
+            },
+
+            chkFail() {
+                if (!this.$refs.form.validate()) {
+                    return;
+                }
+                this.createItem();
+            },
+
+            createItem() {
+
+                var Requests = new FormData();
+                var newStatus = 1;
+
+                Requests.set("partNumber", this.newPartID);
+                Requests.set("email", this.email);
+                Requests.set("partName", this.newItem.newName);
+                Requests.set("stockQuantity", this.newItem.newStock);
+                Requests.set("stockPrice", this.newItem.newPrice);
+                Requests.set("photo", this.newItem.newPhoto);
+                if (this.newItem.newStatus == this.status[0]) {
+                    newStatus = 1;
+                } else {
+                    newStatus = 2;
+                }
+                Requests.set("stockStatus", newStatus);
+
+                axios({
+                    method: "post",
+                    url: '../api/CreatePart.php',
+                    data: Requests,
+                    config: { headers: { "Content-Type": "multipart/form-data" } }
+                })
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            this.failedDialog = true;
+                        } else {
+                            this.createID = this.newPartID;
+                            this.createName = this.newItem.newName;
+                            this.createSuccess = true;
+                            this.newItem.newPhoto = "";
+                            this.edit.editPhoto = "";
+                            this.addDialog = false;
+                            this.getPartList();
+                            this.newPartID += 1;
+                            this.image = null;
+                        }
+                    });
+
+
+            },
+            onFileChange(e) {
+                var files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+                var image = new Image();
+                var reader = new FileReader();
+                var vm = this;
+
+                reader.onload = (e) => {
+                    vm.image = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                this.newItem.newPhoto = file;
+                this.edit.editPhoto = file;
+            },
+            removeImage: function (e) {
+                this.image = '';
+                this.upload();
+            }
+
+        }
+
+
+    })
+</script>
+
+</html>

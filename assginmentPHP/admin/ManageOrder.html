@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="orange darken-3" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <v-icon dark>account_circle</v-icon>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-icon large>account_circle</v-icon>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+            <!----------------------------------------navigation------------------------------------------------>
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role2.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-1 font-weight-thin mb-3">Administrator</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Parts
+                    </v-list-tile>
+
+                    <v-list-tile @click="goPart">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Edit Parts</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Order
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goOrder">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Manage Order</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!--------------------------------------------navigation end---------------------------------->
+
+            <v-content>
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="AdminMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            Manage Order
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            update
+                        </v-icon>
+                        <h1 class="display-1 orange--text ml-3">Manage Order</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Manage the status of order made by dealer</h4>
+
+                    <v-toolbar class="mt-4">
+                        <v-toolbar-title>
+                            <v-icon medium>
+                                list
+                            </v-icon>
+                            Order
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-text-field prepend-inner-icon="search" flat v-model="search" append-icon="send" label="Search" single-line hide-details
+                            solo-inverted></v-text-field>
+
+
+                    </v-toolbar>
+
+
+                    <v-data-table :headers="header1" :items="orders" :pagination.sync="pagination" class="elevation-1" :search="search">
+                        <template slot="items" slot-scope="props">
+                            <td>{{ props.item.orderID }}</td>
+                            <td>{{ props.item.date }}</td>
+                            <td>{{ props.item.deliveryAddress }}</td>
+                            <td>{{ props.item.price }}</td>
+                            <td>{{ props.item.statement }}</td>
+                            <td>{{ props.item.dealerID }}</td>
+                            <td>
+                                <v-tooltip top>
+                                    <v-btn icon class="mx-0" @click="viewOrder(props.item); detailDialog = !(detailDialog)" slot="activator">
+                                        <v-icon color="grey darken-1">assignment</v-icon>
+                                    </v-btn>
+                                    <span>View Order Detail</span>
+                                </v-tooltip>
+                                <v-tooltip v-if="props.item.status==1" top>
+                                    <v-btn icon class="mx-0" @click="viewOrder(props.item); processDialog = !(processDialog)" slot="activator">
+                                        <v-icon color="blue">play_circle_filled</v-icon>
+                                    </v-btn>
+                                    <span>Process The Order</span>
+                                </v-tooltip>
+                                <v-tooltip v-else-if="props.item.status==2" top>
+                                    <v-btn icon class="mx-0" @click="viewOrder(props.item); cancelDialog = !(cancelDialog)" slot="activator">
+                                        <v-icon color="red">cancel</v-icon>
+                                    </v-btn>
+                                    <span>Cancel The Delivery</span>
+                                </v-tooltip>
+                            </td>
+                        </template>
+
+                        <template slot="no-data">
+                            <div class="text-xs-center">No records found</div>
+                        </template>
+                    </v-data-table>
+
+                    <!---------------------------------detail Dialog------------------------------------>
+
+                    <v-dialog v-model="detailDialog" max-width="800px">
+                        <v-card>
+                            <v-card-title>
+                                <p class="title ml-2">Order Detail</p>
+                                <br />
+                            </v-card-title>
+                            <v-card-text>
+                                <p class="title ml-2">Order No. {{processOrder.orderID}}</p>
+
+                                <p class="title ml-2">Date : {{processOrder.date}}</p>
+
+                                <p class="title ml-2">Delivery Address : {{processOrder.deliveryAddress}}</p>
+
+                                <p class="title ml-2">Total Price : ${{processOrder.price}}</p>
+
+                                <p class="title ml-2">Status : {{processOrder.statement}}</p>
+                                <br />
+                                <v-data-table :headers="header2" :items="orderDetail" class="elevation-1" :search="search" hide-actions>
+                                    <template slot="items" slot-scope="props">
+                                        <td>
+                                            <img :src="props.item.src" height="100px"></img>
+                                        </td>
+                                        <td>{{ props.item.partNumber }}</td>
+                                        <td>{{ props.item.partName }}</td>
+                                        <td>{{ props.item.quantity }}</td>
+                                        <td>{{ props.item.price }}</td>
+                                    </template>
+
+                                    <template slot="no-data">
+                                        <div class="text-xs-center">No records found</div>
+                                    </template>
+                                </v-data-table>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn color="primary" flat @click="detailDialog=false">Close</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+
+                    <!--------------------------detail Dialog end---------------------------------->
+
+                    <!---------------------------------process Dialog------------------------------------>
+
+                    <v-dialog v-model="processDialog" max-width="800px">
+                        <v-card>
+                            <v-card-title>
+                                <p class="title ml-2">Update Order</p>
+                                <br />
+                            </v-card-title>
+                            <v-card-text>
+                                <p class="title ml-2">Order No. {{processOrder.orderID}}</p>
+
+                                <p class="title ml-2">Date : {{processOrder.date}}</p>
+
+                                <p class="title ml-2">Delivery Address : {{processOrder.deliveryAddress}}</p>
+
+                                <p class="title ml-2">Status : {{processOrder.statement}}</p>
+
+                                <br />
+                                <!---------------------------------------------------------v-table------------------------------------------------------------>
+
+                                <v-data-table :headers="header3" :items="orderDetail" class="elevation-1" :search="search" hide-actions dark>
+                                    <template slot="items" slot-scope="props">
+                                        <td>{{ props.item.partNumber }}</td>
+                                        <td>{{ props.item.partName }}</td>
+                                        <td>
+                                            <strong>{{ props.item.stockQuantity }} -> </strong>
+
+                                            <strong v-if="props.item.updateQty>0" class="primary--text">
+                                                {{ props.item.updateQty }}
+                                            </strong>
+
+                                            <strong v-else class="red--text">
+                                                {{ props.item.updateQty }}
+                                            </strong>
+
+
+                                        </td>
+                                        <td>{{ props.item.stockPrice }}</td>
+
+                                    </template>
+
+                                    <template slot="no-data">
+                                        <div class="text-xs-center">No records found</div>
+                                    </template>
+                                </v-data-table>
+
+                                <v-alert v-if="!(canUpdate)" :value="true" type="error">
+                                    <v-layout class="ml-1">
+                                        Not Enough Stock!
+                                    </v-layout>
+                                </v-alert>
+
+                                <!---------------------------------------------------------v-table end------------------------------------------------------------>
+
+                            </v-card-text>
+                            <v-card-actions>
+
+                                <v-layout>
+                                    <v-btn color="primary" flat @click="processDialog=false">Close</v-btn>
+                                    <v-btn v-if="canUpdate" color="primary" flat @click="updateOrder(processOrder)">Update</v-btn>
+                                </v-layout>
+
+
+                            </v-card-actions>
+
+                        </v-card>
+                    </v-dialog>
+
+                    <!--------------------------process Dialog end---------------------------------->
+
+                    <!---------------------------------cancel Dialog------------------------------------>
+
+                    <v-dialog v-model="cancelDialog" max-width="800px">
+                        <v-card>
+                            <v-card-title>
+                                <p class="title ml-2">Cancel Order</p>
+                                <br />
+                            </v-card-title>
+                            <v-card-text>
+                                <p class="title ml-2">Order No. {{processOrder.orderID}}</p>
+
+                                <p class="title ml-2">Date : {{processOrder.date}}</p>
+
+                                <p class="title ml-2">Delivery Address : {{processOrder.deliveryAddress}}</p>
+
+                                <p class="title ml-2">Status : {{processOrder.statement}}</p>
+
+
+                                <!---------------------------------------------------------v-table------------------------------------------------------------>
+
+                                <v-data-table :headers="header3" :items="orderDetail" class="elevation-1" :search="search" hide-actions dark>
+                                    <template slot="items" slot-scope="props">
+                                        <td>{{ props.item.partNumber }}</td>
+                                        <td>{{ props.item.partName }}</td>
+                                        <td>
+                                            <strong>{{ props.item.stockQuantity }} -> </strong>
+
+                                            <strong class="primary--text">
+                                                {{ props.item.cancelQty }}
+                                            </strong>
+
+
+                                        </td>
+                                        <td>{{ props.item.stockPrice }}</td>
+
+                                    </template>
+
+                                    <template slot="no-data">
+                                        <div class="text-xs-center">No records found</div>
+                                    </template>
+                                </v-data-table>
+
+                                <!---------------------------------------------------------v-table end------------------------------------------------------------>
+
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn color="primary" flat @click="cancelDialog=false">Close</v-btn>
+                                <v-btn color="primary" flat @click="cancelOrder(processOrder)">delete</v-btn>
+                            </v-card-actions>
+
+                        </v-card>
+                    </v-dialog>
+
+                    <!--------------------------cancel Dialog end---------------------------------->
+
+                </v-container>
+
+                <v-dialog v-model="failedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Server Error! Please Wait!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="cancelSuccess" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="info">
+                        <v-layout class="ml-1">
+                            Cancel Order {{cancelID}} successfully
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="updateSuccess" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Update Order {{updateID}} successfully
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="cantUpdate" max-width="800px" class="pa-3">
+
+                </v-dialog>
+
+            </v-content>
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            email: "",
+            fname: "",
+            lname: "",
+            name: "",
+            Profile: "",
+            search: "",
+            detailDialog: false,
+            processDialog: false,
+            cancelDialog: false,
+            failedDialog: false,
+            cancelSuccess: false,
+            cancelID: "",
+            updateSuccess: false,
+            updateID: "",
+            pagination: {
+                'sortBy': 'partNumber',
+                'ascending': true,
+                rowsPerPage: 10
+            },
+            canUpdate: true,
+            orders: [],
+            header1: [
+                {
+                    text: 'Order Id',
+                    align: 'left',
+                    value: 'orderID'
+                },
+                {
+                    text: 'Date',
+                    value: 'date'
+                },
+                {
+                    text: 'Address',
+                    value: 'deliveryAddress'
+                },
+                {
+                    text: 'Price',
+                    value: 'price'
+                },
+                {
+                    text: 'Status',
+                    value: 'statement'
+                },
+                {
+                    text: 'Order By',
+                    value: 'dealerID'
+                },
+                {
+                    text: 'Actions',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+            header2: [
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'PartNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'Name'
+                },
+                {
+                    text: 'Quantity',
+                    value: 'Quuantity'
+                },
+                {
+                    text: 'Price',
+                    value: 'Price'
+                },
+                {
+                    text: 'Actions',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+            header3: [
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'PartNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'Name'
+                },
+                {
+                    text: 'Stock Quantity',
+                    value: 'StockQuuantity'
+                },
+                {
+                    text: 'Stock Price',
+                    value: 'StockPrice'
+                }
+            ],
+            orderDetail: [],
+            processOrder: [],
+
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+            this.loadOrder();
+        },
+
+
+        methods: {
+
+            goHome() {
+                window.location.href = "AdminMain.html";
+            },
+
+            goPart() {
+                window.location.href = "EditPart.html";
+            },
+
+            goOrder() {
+                window.location.href = "ManageOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetAdminProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.email;
+                this.fname = this.Profile.firstName;
+                this.lname = this.Profile.lastName;
+                this.name = this.fname + " " + this.lname;
+            },
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+            loadOrder() {
+                axios
+                    .get("../api/GetAdminOrders.php")
+                    .then(resp => {
+                        this.orders = resp.data; //put requested data inside vue object(post)
+                    });
+            },
+
+            viewOrder(order) {
+                axios
+                    .get("../api/ViewOrder.php?orderID=" + order.orderID)
+                    .then(resp => {
+                        this.processOrder = order;
+                        this.orderDetail = resp.data;
+                        this.chkCanUpdate(order);
+                    });
+            },
+
+            chkCanUpdate(order) {
+                axios
+                    .get("../api/ChkCanUpdate.php?orderID=" + order.orderID)
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            this.canUpdate = false;
+                        } else {
+                            this.canUpdate = true; //put requested data inside vue object(post)s
+                        }
+                    });
+            },
+
+            updateOrder(order) {
+                axios
+                    .get("../api/ProcessOrder.php?orderID=" + order.orderID)
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            this.failedDialog = true;
+                        } else {
+                            this.updateSuccess = true;
+                            this.updateID = order.orderID;
+                            this.processDialog = false;
+                            this.loadOrder();
+                        }
+                    });
+            },
+
+            cancelOrder(order) {
+                axios
+                    .get("../api/CancelOrder.php?orderID=" + order.orderID)
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            this.failedDialog = true;
+                        } else {
+                            this.cancelSuccess = true;
+                            this.cancelID = order.orderID;
+                            this.cancelDialog = false;
+                            this.loadOrder();
+                        }
+                    });
+            }
+
+        }
+
+
+    })
+</script>
+
+</html>

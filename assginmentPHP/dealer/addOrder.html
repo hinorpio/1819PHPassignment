@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="primary" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-avatar size="32px" tile>
+                                        <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                                    </v-avatar>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="goManage">
+
+                            <v-list-tile-action>
+                                <v-icon>settings</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Manage Your Account</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-2 font-weight-thin mb-3">Dealer</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Orders
+                    </v-list-tile>
+
+                    <v-list-tile @click="goAdd">
+                        <v-list-tile-action>
+                            <v-icon>add_box</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Make Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goUpdate">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Update Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Account
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goView">
+                        <v-list-tile-action>
+                            <v-icon>chrome_reader_mode</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goEdit">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Edit Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goChange">
+                        <v-list-tile-action>
+                            <v-icon>security</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Change Password</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!---------------------------------------------------------------->
+
+            <v-content>
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="dealerMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            Add Order
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            add_box
+                        </v-icon>
+                        <h1 class="display-1 primary--text ml-3">Add Order</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Create a new order to order things in the system</h4>
+
+                    <!---------------------------------------cart-------------------------------------------------->
+
+                    <v-toolbar class="mt-4">
+                        <v-toolbar-title>
+                            <v-icon medium>
+                                shopping_cart
+                            </v-icon>
+                            Order No : {{this.newOrderID}}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <strong class="title mr-1">Delivery To : </strong>
+                        <v-text-field prepend-inner-icon="local_shipping" flat v-model="address" append-icon="send" label="Search" single-line hide-details
+                            solo-inverted></v-text-field>
+
+
+                    </v-toolbar>
+
+
+                    <v-data-table :headers="header2" :items="cart" :pagination.sync="pagination" class="elevation-1" :search="searchCart" hide-actions>
+
+                        <template slot="items" slot-scope="props">
+                            <td>
+                                <img :src="props.item.src" height="100px"></img>
+                            </td>
+                            <td>{{props.item.partNumber}}</td>
+                            <td>{{props.item.partName}}</td>
+                            <td>{{props.item.stockPrice}}</td>
+
+                            <td>
+
+                                <v-tooltip v-if="props.item.qty == 1" top>
+                                    <v-btn icon class="mx-0" @click="cartMinus(props.item)" slot="activator">
+                                        <v-icon color="grey darken-1">remove_circle_outline</v-icon>
+                                    </v-btn>
+                                    <span>Can't Below 1</span>
+                                </v-tooltip>
+
+                                <v-tooltip v-else top>
+                                    <v-btn icon class="mx-0" @click="cartMinus(props.item)" slot="activator">
+                                        <v-icon color="red darken-1">remove_circle_outline</v-icon>
+                                    </v-btn>
+                                    <span>Minus QTY By 1</span>
+                                </v-tooltip>
+
+                                {{props.item.qty}}
+                                <v-tooltip v-if="props.item.qty == props.item.stockQuantity" top>
+                                    <v-btn icon class="mx-0" @click="cartAdd(props.item)" slot="activator">
+                                        <v-icon color="grey darken-1">add_circle_outline</v-icon>
+                                    </v-btn>
+                                    <span>Reach Max Limit</span>
+                                </v-tooltip>
+
+                                <v-tooltip v-else top>
+                                    <v-btn icon class="mx-0" @click="cartAdd(props.item)" slot="activator">
+                                        <v-icon color="green darken-1">add_circle_outline</v-icon>
+                                    </v-btn>
+                                    <span>Add QTY By 1</span>
+                                </v-tooltip>
+
+                            </td>
+                            <td>HKD {{props.item.totalPrice}}</td>
+                            <td>
+                                <v-tooltip top>
+                                    <v-btn icon class="mx-0" @click="deleteItem(props.item)" slot="activator">
+                                        <v-icon color="primary">delete</v-icon>
+                                    </v-btn>
+                                    <span>Delete Item</span>
+                                </v-tooltip>
+                            </td>
+                        </template>
+
+                        <template slot="footer">
+                            <td>
+                                <strong>Total : HKD {{this.totalPrice.toFixed(2)}}</strong>
+                            </td>
+                            <td>
+
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <v-btn class="mx-0" color="primary" slot="activator" @click="sendOrder">
+                                Submit Order
+                            </v-btn>
+
+                        </template>
+
+                        <template slot="no-data">
+                            <div class="text-xs-center">The Cart Is Empty</div>
+                        </template>
+
+                        <template slot="no-results">
+                            <div class="text-xs-center">Cannot Find '{{this.searchCart}}'</div>
+                        </template>
+                    </v-data-table>
+
+
+
+                    <!------------------------------------------item---------------------------------------------------->
+
+                    <v-card class="mt-4" dark>
+                        <v-card-title>
+
+                            <v-toolbar>
+                                <v-toolbar-title>
+                                    Items
+                                </v-toolbar-title>
+                                <v-spacer></v-spacer>
+                                <v-text-field prepend-inner-icon="search" flat v-model="search" append-icon="send" label="Search" single-line hide-details
+                                    solo-inverted></v-text-field>
+
+                            </v-toolbar>
+
+                        </v-card-title>
+
+                        <v-card-text>
+                            <v-data-table :headers="header1" :items="partList" :pagination.sync="pagination" class="elevation-1" :search="search">
+                                <template slot="items" slot-scope="props">
+                                    <td>
+                                        <img :src="props.item.src" height="100px"></img>
+                                    </td>
+                                    <td>{{props.item.partNumber}}</td>
+                                    <td>{{props.item.partName}}</td>
+                                    <td>{{props.item.stockQuantity}}</td>
+                                    <td>HKD {{props.item.stockPrice}}</td>
+                                    <td>{{props.item.statement}}</td>
+
+                                    <td>
+                                        <v-tooltip v-if="props.item.stockStatus==2" top>
+                                            <v-btn icon class="mx-0" @click="" slot="activator">
+                                                <v-icon color="grey">remove_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Item Unavailable</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip v-else-if="props.item.qty == 0 && props.item.stockStatus==1" top>
+                                            <v-btn icon class="mx-0" @click="" slot="activator">
+                                                <v-icon color="grey">remove_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Can't Below 0</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip v-else-if="props.item.qty > 0 && props.item.stockStatus==1" top>
+                                            <v-btn icon class="mx-0" @click="minus(props.item)" slot="activator">
+                                                <v-icon color="red darken-1">remove_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Minus QTY By 1</span>
+                                        </v-tooltip>
+
+                                        {{props.item.qty}}
+
+                                        <v-tooltip v-if="props.item.stockStatus==2" top>
+                                            <v-btn icon class="mx-0" @click="" slot="activator">
+                                                <v-icon color="grey">add_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Item Unavailable</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip v-else-if="props.item.qty == props.item.stockQuantity" top>
+                                            <v-btn icon class="mx-0" @click="" slot="activator">
+                                                <v-icon color="grey">add_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Reach Max Limit</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip v-else-if="props.item.qty < props.item.stockQuantity && props.item.stockStatus==1" top>
+                                            <v-btn icon class="mx-0" @click="add(props.item)" slot="activator">
+                                                <v-icon color="green darken-1">add_circle_outline</v-icon>
+                                            </v-btn>
+                                            <span>Add QTY By 1</span>
+                                        </v-tooltip>
+
+                                    </td>
+                                    <td>
+                                        <v-tooltip top>
+                                            <v-btn icon class="mx-0" @click="addToCart(props.item)" slot="activator">
+                                                <v-icon color="">send</v-icon>
+                                            </v-btn>
+                                            <span>Add To Order</span>
+                                        </v-tooltip>
+                                    </td>
+                                </template>
+
+                                <template slot="no-data">
+                                    <div class="text-xs-center">No Item Found</div>
+                                </template>
+
+                                <template slot="no-results">
+                                    <div class="text-xs-center">Cannot Find '{{this.search}}'</div>
+                                </template>
+                            </v-data-table>
+
+                        </v-card-text>
+
+
+                    </v-card>
+
+
+                </v-container>
+
+                <!---------------------------------------------------------------->
+
+                <v-dialog v-model="sentDialog" max-width="800px" class="pa-3">
+                    <v-card class="pa-3" dark>
+                        <v-card-text>
+                            <h2>Order {{this.newOrderID-1}} has been sent!</h2>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+
+                <v-dialog v-model="maxDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            You can only order {{maxQTY}} {{maxName}}({{maxPartNo}}) at most!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="zeroDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Please enter a value to order the part!!!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="emptyDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Please add part to the cart!!!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+
+            </v-content>
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            address: "",
+            phone: "",
+            email: "",
+            Profile: "",
+            name: "",
+            newOrderID: "",
+            search: "",
+            searchCart: "",
+            totalPrice: 0,
+            maxDialog: false,
+            maxName: '',
+            maxQTY: '',
+            maxPartNo: '',
+            zeroDialog: false,
+            sentDialog: false,
+            emptyDialog: false,
+            partList: [],
+            cart: [],
+            itemIndex: 1,
+            pagination: {
+                'sortBy': 'partNumber',
+                'ascending': true,
+                rowsPerPage: 10
+            },
+            header1: [
+                {
+                    text: 'Part Image',
+                    align: 'left',
+                    value: 'image',
+                    sortable: false
+                },
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'partNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'partName'
+                },
+                {
+                    text: 'Stock',
+                    value: 'stockQuantity'
+                },
+                {
+                    text: 'Price',
+                    value: 'stockPrice'
+                },
+                {
+                    text: 'Status',
+                    value: 'stockStatus'
+                },
+                {
+                    text: 'QTY',
+                    value: 'qty',
+                    sortable: false
+                },
+                {
+                    text: 'Action',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+            header2: [
+                {
+                    text: 'Part Image',
+                    align: 'left',
+                    value: 'image',
+                    sortable: false
+                },
+                {
+                    text: 'Part No.',
+                    align: 'left',
+                    value: 'partNumber'
+                },
+                {
+                    text: 'Name',
+                    value: 'partName'
+                },
+                {
+                    text: 'Price',
+                    value: 'stockPrice'
+                },
+                {
+                    text: 'QTY',
+                    value: 'qty',
+                    sortable: false
+                },
+                {
+                    text: 'Total Price',
+                    value: 'totalPrice'
+                },
+                {
+                    text: 'Action',
+                    value: 'name',
+                    sortable: false
+                }
+            ],
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+            this.getPartList();
+            this.getNewOrderID();
+            this.loadCart();
+        },
+
+
+        methods: {
+
+            goManage() {
+                window.location.href = "manageAccount.html";
+            },
+
+            goEdit() {
+                window.location.href = "editProfile.html";
+            },
+
+            goView() {
+                window.location.href = "viewProfile.html";
+            },
+
+            goHome() {
+                window.location.href = "dealerMain.html";
+            },
+
+            goChange() {
+                window.location.href = "changePwd.html";
+            },
+
+            goAdd() {
+                window.location.href = "addOrder.html";
+            },
+
+            goUpdate() {
+                window.location.href = "updateOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getPartList() {
+                axios
+                    .get("../api/GetPartList.php")
+                    .then(resp => {
+                        this.partList = resp.data;
+                    });
+            },
+
+            getNewOrderID() {
+                axios
+                    .get("../api/GetNewOrderID.php")
+                    .then(resp => {
+                        this.newOrderID = resp.data;
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetDealerProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.dealerID;
+                this.name = this.Profile.name;
+                this.phone = this.Profile.phoneNumber;
+                this.address = this.Profile.address;
+            },
+
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+            minus(item) {
+                if (item.stockStatus == 1) {
+                    if (item.qty != 0) {
+                        item.qty--;
+                    }
+                }
+
+            },
+
+            add(item) {
+
+                if (item.stockStatus == 1) {
+                    if (item.qty < item.stockQuantity) {
+                        item.qty++;
+                    }
+
+                }
+            },
+
+            cartMinus(item) {
+                if (item.qty > 1) {
+                    item.qty--;
+
+                    var x = item.stockPrice * item.qty;
+
+                    item.totalPrice = x.toFixed(2);
+                    this.totalPrice -= parseFloat(item.stockPrice);
+
+                    var index = 0;
+
+                    for (i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i]['partNumber'] == item.partNumber) {
+                            index = i;
+                            break;
+                        }
+                    }
+
+
+
+                    var Requests = new FormData();
+
+                    Requests.set("index", index);
+                    Requests.set("totalPrice", item.totalPrice);
+                    Requests.set("qty", item.qty);
+
+                    axios({
+                        method: "post",
+                        url: '../api/UpdateCart.php',
+                        data: Requests,
+                        config: { headers: { "Content-Type": "multipart/form-data" } }
+                    })
+                        .then(resp => {
+
+                        });
+
+                }
+
+
+            },
+
+            cartAdd(item) {
+                if (item.qty < item.stockQuantity) {
+                    item.qty++;
+
+                    var x = item.stockPrice * item.qty;
+
+                    item.totalPrice = x.toFixed(2);
+                    this.totalPrice += parseFloat(item.stockPrice);
+
+                    var index = 0;
+
+                    for (i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i]['partNumber'] == item.partNumber) {
+                            index = i;
+                            break;
+                        }
+                    }
+
+
+
+                    var Requests = new FormData();
+
+                    Requests.set("index", index);
+                    Requests.set("totalPrice", item.totalPrice);
+                    Requests.set("qty", item.qty);
+
+                    axios({
+                        method: "post",
+                        url: '../api/UpdateCart.php',
+                        data: Requests,
+                        config: { headers: { "Content-Type": "multipart/form-data" } }
+                    })
+                        .then(resp => {
+
+                        });
+
+
+                }
+            },
+
+            loadCart() {
+                axios
+                    .get("../api/GetCart.php")
+                    .then(resp => {
+                        this.cart = resp.data; //put requested data inside vue object(post)
+                    });
+            },
+
+            addToCart(item) {
+
+                var exist = false;
+                var index = 0;
+
+                for (i = 0; i < this.cart.length; i++) {
+                    if (this.cart[i]['partNumber'] == item.partNumber) {
+                        exist = true;
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (exist == false) {
+                    if (item.qty != 0) {
+                        var Requests = new FormData();
+
+                        Requests.set("partNumber", item.partNumber);
+                        Requests.set("partName", item.partName);
+                        Requests.set("stockPrice", item.stockPrice);
+                        Requests.set("stockQuantity", item.stockQuantity);
+                        Requests.set("qty", item.qty);
+                        axios({
+                            method: "post",
+                            url: '../api/AddToCart.php',
+                            data: Requests,
+                            config: { headers: { "Content-Type": "multipart/form-data" } }
+                        })
+                            .then(resp => {
+                                this.cart.push(resp.data);
+                                this.totalPrice += item.stockPrice * item.qty;
+                            });
+                    } else {
+                        this.zeroDialog = true;
+                    }
+
+                } else {
+
+                    stockPrice = item.stockPrice;
+                    var newQty = parseInt(item.qty);
+                    var cartQty = parseInt(this.cart[index]['qty']);
+                    var finalQty = newQty + cartQty;
+
+                    if (finalQty > item.stockQuantity) {
+                        this.maxDialog = true;
+                        this.maxName = item.partName;
+                        this.maxQTY = item.stockQuantity;
+                        this.maxPartNo = item.partNumber;
+                    } else {
+                        var newTotal = item.stockPrice * finalQty;
+
+                        this.cart[index]['qty'] = finalQty;
+                        this.cart[index]['totalPrice'] = newTotal.toFixed(2);
+
+                        this.totalPrice += item.stockPrice * newQty;
+                    }
+
+
+                }
+
+
+            },
+
+            deleteItem(item) {
+
+                var index = 0;
+
+                for (i = 0; i < this.cart.length; i++) {
+                    if (this.cart[i]['partNumber'] == item.partNumber) {
+                        index = i;
+                        break;
+                    }
+                }
+                var Requests = new FormData();
+
+                Requests.set("index", index);
+
+                axios({
+                    method: "post",
+                    url: '../api/DeleteItem.php',
+                    data: Requests,
+                    config: { headers: { "Content-Type": "multipart/form-data" } }
+                })
+                    .then(resp => {
+                        this.totalPrice -= item.stockPrice * item.qty;
+                        const index = this.cart.indexOf(item);
+                        this.cart.splice(index, 1);
+                    });
+
+
+
+            },
+
+            sendOrder() {
+                if (this.cart.length > 0) {
+                    var Requests = new FormData();
+
+                    Requests.set("newID", this.newOrderID);
+                    Requests.set("dealerID", this.email);
+                    Requests.set("address", this.address);
+
+                    axios({
+                        method: "post",
+                        url: '../api/SubmitOrder.php',
+                        data: Requests,
+                        config: { headers: { "Content-Type": "multipart/form-data" } }
+                    })
+                        .then(resp => {
+                            this.sentDialog = true;
+                            this.cart = [];
+                            this.newOrderID++;
+                            this.getPartList();
+                            this.refresh();
+                        });
+                } else {
+                    this.emptyDialog = true;
+                }
+
+            },
+
+
+
+        }
+
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="primary" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-avatar size="32px" tile>
+                                        <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                                    </v-avatar>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="goManage">
+
+                            <v-list-tile-action>
+                                <v-icon>settings</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Manage Your Account</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-2 font-weight-thin mb-3">Dealer</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Orders
+                    </v-list-tile>
+
+                    <v-list-tile @click="goAdd">
+                        <v-list-tile-action>
+                            <v-icon>add_box</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Make Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goUpdate">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Update Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Account
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goView">
+                        <v-list-tile-action>
+                            <v-icon>chrome_reader_mode</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goEdit">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Edit Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goChange">
+                        <v-list-tile-action>
+                            <v-icon>security</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Change Password</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!---------------------------------------------------------------->
+
+            <v-content>
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="dealerMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item href="manageAccount.html">
+                            Manage Your Account
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            Edit Profile
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            edit
+                        </v-icon>
+                        <h1 class="display-1 primary--text ml-3">Edit Profile</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Update your personal information in this account at the below box</h4>
+                    <!-------------------------------------------------------------------------------------------------------------------->
+
+                    <v-card class="mt-4">
+                        <v-footer dark>
+                            <v-toolbar-title class="ml-5 font-weight-thin subheading">User Profile</v-toolbar-title>
+                        </v-footer>
+
+                        <v-card-text class="px-5 pt-4">
+
+                            <v-layout>
+                                <v-flex xs6>
+                                    <v-layout column>
+                                        <v-flex class="font-weight-medium">
+
+                                            Email:
+                                            <v-text-field disabled v-model="email"></v-text-field>
+
+                                            Name :
+                                            <v-text-field v-model="edit.name"></v-text-field>
+
+                                            Phone Number :
+                                            <v-text-field v-model="edit.phone"></v-text-field>
+
+                                            Deliver Address :
+                                            <v-text-field v-model="edit.address"></v-text-field>
+
+                                        </v-flex>
+
+
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs2></v-flex>
+
+                                <v-flex xs4>
+                                    <div v-if="!image">
+                                        <h2>Select an image</h2>
+                                        <img :src="Profile.src" height="342.5px"></img>
+                                        <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                        <v-btn block @click="upload">Upload Image</v-btn>
+                                    </div>
+                                    <div v-else>
+                                        <h2>Select an image</h2>
+                                        <img :src="image" height="342.5px" />
+                                        <input type="file" name="photo" value="Upload" @change="onFileChange" ref="upload" hidden="hidden">
+                                        <v-btn block @click="removeImage">Upload Image</v-btn>
+                                    </div>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout>
+                                <v-flex xs6>
+                                    <v-btn block dark @click="updateProfile">Update</v-btn>
+                                </v-flex>
+                            </v-layout>
+
+                        </v-card-text>
+                    </v-card>
+
+                </v-container>
+
+
+                <v-dialog v-model="updatedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Your Profile Has Been Updated Successfully!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="failedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Please fill in the updated information!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+            </v-content>
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            drawer: null,
+            left: false,
+            address: "",
+            phone: "",
+            email: "",
+            Profile: "",
+            name: "",
+            updatedDialog: '',
+            failedDialog: '',
+            image: null,
+            edit: {
+                name: "",
+                phone: "",
+                address: "",
+                photo: null,
+            },
+            msg: "Re-enter new information in the field to update your account profile",
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+        },
+
+
+        methods: {
+
+            upload() {
+                this.$refs.upload.click();
+            },
+
+            goManage() {
+                window.location.href = "manageAccount.html";
+            },
+
+            goEdit() {
+                window.location.href = "editProfile.html";
+            },
+
+            goView() {
+                window.location.href = "viewProfile.html";
+            },
+
+            goHome() {
+                window.location.href = "dealerMain.html";
+            },
+
+            goChange() {
+                window.location.href = "changePwd.html";
+            },
+
+            goAdd() {
+                window.location.href = "addOrder.html";
+            },
+
+            goUpdate() {
+                window.location.href = "updateOrder.html";
+            },
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            updateProfile() {
+
+                var Requests = new FormData();
+
+                Requests.set("name", this.edit.name);
+                Requests.set("phone", this.edit.phone);
+                Requests.set("address", this.edit.address);
+                Requests.set("email", this.email);
+                Requests.set("photo", this.edit.editPhoto);
+
+                axios({
+                    method: "post",
+                    url: '../api/UpdateProfile.php',
+                    data: Requests,
+                    config: { headers: { "Content-Type": "multipart/form-data" } }
+                })
+                    .then(resp => {
+                        if (resp.data == 0) {
+                            this.updatedDialog = true;
+                        } else {
+                            this.failedDialog = true;
+                        }
+                        this.Profile.src = "";
+                        this.getProfile();
+                    });
+
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetDealerProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.dealerID;
+                this.name = this.Profile.name;
+                this.phone = this.Profile.phoneNumber;
+                this.address = this.Profile.address;
+                this.edit.name = this.name;
+                this.edit.phone = this.phone;
+                this.edit.address = this.address;
+            },
+
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+            onFileChange(e) {
+                var files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+                var image = new Image();
+                var reader = new FileReader();
+                var vm = this;
+
+                reader.onload = (e) => {
+                    vm.image = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                this.edit.editPhoto = file;
+            },
+            removeImage: function (e) {
+                this.image = '';
+                this.upload();
+            }
+
+        }
+
+
+    })
+</script>
+
+</html>

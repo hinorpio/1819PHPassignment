@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A.D.A Ordering System</title>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="../asset/css/fadein.css">
+    <link rel="stylesheet" href="../asset/css/material-icon.css">
+    <link rel="stylesheet" href="../asset/css/vuetify.min.css">
+    <link rel="stylesheet" href="../asset/css/roboto-font.css">
+
+    <div id="app">
+        <v-app id="inspire">
+
+            <v-toolbar color="primary" dark fixed app clipped-left>
+                <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-toolbar-title>A.D.A Inc.</v-toolbar-title>
+                <v-spacer></v-spacer>
+                {{name}}
+                <v-menu offset-y transition="slide-y-transition">
+                    <v-btn icon large slot="activator">
+                        <v-avatar size="32px" tile>
+                            <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                        </v-avatar>
+                    </v-btn>
+
+
+                    <v-list expand>
+                        <v-list-tile class="mb-1">
+
+                            <v-list-tile-action>
+                                <v-btn icon slot="activator" disabled>
+                                    <v-avatar size="32px" tile>
+                                        <img :src="Profile.src" aspect-ratio="1" style="border-radius: 50%;"></img>
+                                    </v-avatar>
+                                </v-btn>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{name}}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{email}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-divider></v-divider>
+
+                        <v-list-tile @click="goManage">
+
+                            <v-list-tile-action>
+                                <v-icon>settings</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Manage Your Account</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+                        <v-list-tile @click="logout">
+
+                            <v-list-tile-action>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-tile-action>
+
+                            <v-list-tile-content>
+                                <v-list-tile-sub-title>Sign Out</v-list-tile-sub-title>
+                            </v-list-tile-content>
+
+                        </v-list-tile>
+
+
+                    </v-list>
+                </v-menu>
+            </v-toolbar>
+
+            <v-navigation-drawer v-model="drawer" fixed left clipped app>
+
+                <v-parallax dark src="../asset/image/role.jpg" height="185">
+                    <v-layout align-center column justify-center>
+                        <h1 class="display-2 font-weight-thin mb-3">Dealer</h1>
+                        <h4 class="subheading">A Dope Afternoon Inc.</h4>
+                    </v-layout>
+                </v-parallax>
+
+                <v-list>
+
+                    <v-list-tile>
+                        Orders
+                    </v-list-tile>
+
+                    <v-list-tile @click="goAdd">
+                        <v-list-tile-action>
+                            <v-icon>add_box</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Make Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goUpdate">
+                        <v-list-tile-action>
+                            <v-icon>update</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View & Update Orders</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-divider> </v-divider>
+
+                    <v-list-tile>
+                        Account
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goView">
+                        <v-list-tile-action>
+                            <v-icon>chrome_reader_mode</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>View Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goEdit">
+                        <v-list-tile-action>
+                            <v-icon>edit</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Edit Profile</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile class="mt-1" @click="goChange">
+                        <v-list-tile-action>
+                            <v-icon>security</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Change Password</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!---------------------------------------------------------------->
+
+            <v-content>
+                <v-toolbar dense flat scolor="grey lighten-3">
+                    <v-breadcrumbs>
+                        <v-icon slot="divider">chevron_right</v-icon>
+                        <v-breadcrumbs-item href="dealerMain.html">
+                            Home Page
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item href="manageAccount.html">
+                            Manage Your Account
+                        </v-breadcrumbs-item>
+                        <v-breadcrumbs-item>
+                            Change Password
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                </v-toolbar>
+
+                <v-container grid-list-md>
+
+                    <v-layout>
+                        <v-icon large>
+                            security
+                        </v-icon>
+                        <h1 class="display-1 primary--text ml-3">Change Password</h1>
+                    </v-layout>
+                    <h4 class="subheading ml-5">Update your current password after authentication to protect your account </h4>
+
+
+                    <v-card class="mt-4">
+                        <v-toolbar>
+                            <v-toolbar-title>Change Password</v-toolbar-title>
+                        </v-toolbar>
+
+                        <v-card-text class="px-5 pt-4">
+                            <v-layout>
+                                <v-flex xs6>
+                                    <v-layout column>
+                                        <v-flex class="font-weight-medium">
+
+                                            <v-text-field label="Current Password" v-model="oldpwd" :type="'password'" :rules="passwordRules"></v-text-field>
+
+                                            <v-text-field @keyup="CheckPassword" label="New Password" v-model="newpwd" :rules="passwordRules" :type="'password'" required></v-text-field>
+
+                                            <v-text-field @keyup="CheckPassword" label="Confirm Password" v-model="conpwd" :rules="passwordRules" :type="'password'"
+                                                required></v-text-field>
+
+
+
+                                            <v-layout class="mt-2">
+                                                <v-flex>
+                                                    <v-btn block @click="updatePassword">Update</v-btn>
+                                                </v-flex>
+                                                <V-flex>
+                                                    <v-btn block @click="reset">Reset</v-btn>
+                                                </V-flex>
+                                            </v-layout>
+
+                                        </v-flex>
+
+
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex></v-flex>
+                                <v-flex xs5>
+                                    <v-alert v-model="pwalert" :value="false" color="error" icon="warning" outline>
+                                        <v-layout class="ml-1">{{this.msg}}</v-layout>
+                                    </v-alert>
+                                </v-flex>
+
+                            </v-layout>
+
+                        </v-card-text>
+                    </v-card>
+
+                </v-container>
+
+                <v-dialog v-model="currentDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Your Current Password Is Wrong, Please Try Again!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="changedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="success">
+                        <v-layout class="ml-1">
+                            Your Password Has Been Changed Successfully!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="failedDialog" max-width="800px" class="pa-3">
+                    <v-alert :value="true" type="error">
+                        <v-layout class="ml-1">
+                            Server Error! Please Wait!
+                        </v-layout>
+                    </v-alert>
+                </v-dialog>
+
+                <v-dialog v-model="oldpwdDialog" max-width="800px" class="pa-3">
+                        <v-alert :value="true" type="error">
+                            <v-layout class="ml-1">
+                                Please enter your current password!
+                            </v-layout>
+                        </v-alert>
+                    </v-dialog>
+
+
+            </v-content>
+
+            <v-footer class="pr-3 grey darken-3" dark app height="auto">
+                <v-spacer></v-spacer>
+                <div>170524912 & 170516660 &copy; {{ new Date().getFullYear() }}</div>
+            </v-footer>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="../asset/js/vue.js"></script>
+<script src="../asset/js/vuetify.js"></script>
+<script src="../asset/js/axios.js"></script>
+<script src="../asset/js/moment.js"></script>
+<script src="../asset/js/fadein.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fadeIn(document.getElementById("app"))
+    }, false);
+</script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data: () => ({
+            oldpwd: "",
+            newpwd: "",
+            conpwd: "",
+            drawer: null,
+            left: false,
+            address: "",
+            phone: "",
+            email: "",
+            Profile: "",
+            name: "",
+            pwalert: "",
+            currentDialog: false,
+            changedDialog: false,
+            failedDialog: false,
+            oldpwdDialog: false,
+            msg: "",
+            passwordRules: [
+                v => !!v || 'Password is required'
+            ],
+        }),
+
+        created() {
+            this.getSession();
+            this.getProfile();
+        },
+
+
+        methods: {
+
+            goManage() {
+                window.location.href = "manageAccount.html";
+            },
+
+            goEdit() {
+                window.location.href = "editProfile.html";
+            },
+
+            goView() {
+                window.location.href = "viewProfile.html";
+            },
+
+            goHome() {
+                window.location.href = "dealerMain.html";
+            },
+
+            goChange() {
+                window.location.href = "changePwd.html";
+            },
+
+            goAdd() {
+                window.location.href = "addOrder.html";
+            },
+
+            goUpdate() {
+                window.location.href = "updateOrder.html";
+            },
+
+            getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return "";
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+
+            CheckPassword() {
+                if (this.newpwd == this.conpwd) {
+                    this.pwalert = false;
+                } else {
+                    this.pwalert = true;
+                    this.msg = "Password Not Match";
+                }
+            },
+
+            getSession() {
+                axios
+                    .get("../api/GetEmail.php")
+                    .then(resp => {
+                        if (resp.data == 1) {
+                            window.location.href = '../index.html'
+                        } else {
+                            this.email = resp.data;//put requested data inside vue object(post)
+                        }
+
+                    });
+            },
+
+            getProfile() {
+                axios
+                    .get("../api/GetDealerProfile.php")
+                    .then(resp => {
+                        this.Profile = resp.data;
+                        this.refresh();
+                    });
+            },
+
+            refresh() {
+                this.email = this.Profile.dealerID;
+                this.name = this.Profile.name;
+                this.phone = this.Profile.phoneNumber;
+                this.address = this.Profile.address;
+            },
+
+            reset() {
+                this.oldpwd = "";
+                this.newpwd = "";
+                this.conpwd = "";
+            },
+
+            updatePassword() {
+                if (this.oldpwd != "") {
+                    if (!this.pwalert) {
+                        var Requests = new FormData();
+                        result = 1;
+                        Requests.set("confirmPassword", this.conpwd);
+                        Requests.set("oldPassword", this.oldpwd);
+                        axios({
+                            method: "post",
+                            url: "../api/UpdatePassword.php ",
+                            data: Requests,
+                            config: { headers: { "Content-Type": "multipart/form-data" } }
+                        })
+                            .then(resp => {
+                                if (resp.data == 2) {
+                                    this.currentDialog = true;
+                                } else if (resp.data == 0) {
+                                    this.changedDialog = true;
+                                    this.reset();
+                                } else {
+                                    this.failedDialog = true;
+                                }
+                            });
+                    }
+                }else{
+                    this.oldpwdDialog = true;
+                }
+
+            },
+
+            logout() {
+                axios({
+                    method: 'get',
+                    url: '../api/Logout.php',
+                }).then(res => {
+                    window.location.href = '../index.html'
+                })
+            },
+
+        }
+
+
+    })
+</script>
+
+</html>
